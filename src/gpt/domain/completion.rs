@@ -1,4 +1,8 @@
-struct Options {
+use serde::{Serialize, Deserialize};
+use std::collections::HashMap;
+
+#[derive(Serialize, Debug)]
+pub struct Options {
     /// The prompt(s) to generate completions for, encoded as a string
     prompt: &'static str,
 
@@ -68,15 +72,29 @@ impl Default for Options {
     }
 }
 
-// this._construct_parameter("prompt", opts.prompt),
-// this._construct_parameter("stream", opts.stream),
-// this._construct_parameter("stop", opts.stop),
-// this._construct_parameter("max_tokens", this._safe_cast(opts.maxTokens)),
-// this._construct_parameter("temperature", this._safe_cast(opts.temperature)),
-// this._construct_parameter("top_p", this._safe_cast(opts.topP)),
-// this._construct_parameter("presence_penalty", this._safe_cast(opts.presencePenalty)),
-// this._construct_parameter("frequency_penalty", this._safe_cast(opts.frequencyPenalty)),
-// this._construct_parameter("best_of", this._safe_cast(opts.bestOf)),
-// this._construct_parameter("n", this._safe_cast(opts.n)),
-// this._construct_parameter("logprobs", this._safe_cast(opts.logprobs)),
-// this._construct_parameter("echo", opts.echo),
+/// represents a response structure for completion API
+#[derive(Deserialize, Debug)]
+pub struct Response {
+    id: String,
+    object: String,
+    created: u64,
+    model: String,
+    choices: Vec<Completion>
+}
+
+/// represents a single possible completion done by GPT-3
+#[derive(Deserialize, Debug)]
+struct Completion {
+    text: String,
+    index: u16,
+    finish_reason: String,
+    logprobs: LogProbs,
+}
+
+#[derive(Deserialize, Debug)]
+struct LogProbs {
+    tokens: Vec<String>,
+    token_logprobs: Vec<f32>,
+    top_logprobs: HashMap<String, f32>,
+    text_offset: Vec<u16>
+}

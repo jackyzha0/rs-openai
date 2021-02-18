@@ -1,9 +1,10 @@
-mod completion;
+mod domain;
+mod http;
 
 /// Engine Types. Davinci is the most complex and expensive, Ada is the simplest and cheapest
 enum EngineType {
     /// Good at: Complex intent, cause and effect, summarization for audience
-    DaVinci,
+    Davinci,
 
     /// Good at: Language translation, complex classification, text sentiment, summarization
     Curie,
@@ -26,8 +27,8 @@ impl EngineType {
         }
     }
 
-    fn to_endpoint(&self) -> &'static str {
-        &format!("{base}/{engine}", base=API_BASE, engine=*self.to_str())
+    fn to_endpoint(&self) -> String {
+        format!("{base}/{engine}", base=API_BASE, engine=self.to_str())
     }
 }
 
