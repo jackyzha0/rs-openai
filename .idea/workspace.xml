@@ -6,8 +6,13 @@
   <component name="ChangeListManager">
     <list default="true" id="4b75c59c-ccac-44c0-aa91-85c51b9d42c2" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/gpt/domain/completion.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/gpt/domain/completion.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/gpt/domain/search.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/gpt/domain/search.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/gpt/http.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/gpt/http.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/gpt/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/gpt/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -74,7 +79,7 @@
       <updated>1613624129142</updated>
       <workItem from="1613624130244" duration="1627000" />
       <workItem from="1613665340147" duration="2392000" />
-      <workItem from="1613670254591" duration="21017000" />
+      <workItem from="1613670254591" duration="27266000" />
     </task>
     <servers />
   </component>

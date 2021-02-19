@@ -1,4 +1,6 @@
 use serde::{Serialize, Deserialize};
+use anyhow::Result;
+use reqwest::Response;
 
 #[derive(Serialize, Debug)]
 pub struct Options {
