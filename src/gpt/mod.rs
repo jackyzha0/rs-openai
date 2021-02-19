@@ -54,7 +54,7 @@ impl GPTClient {
     pub async fn request<T: Serialize>(&self, engine: EngineType, task_type: TaskType, options: T) -> String {
         let res = http::rq(
             engine.to_endpoint(task_type),
-            (&self.api_key).clone(),
+            &self.api_key,
             options,
         ).await;
 
@@ -71,7 +71,6 @@ impl GPTClient {
     }
 
     pub async fn summarize(&self, text: String) -> String {
-        const ENGINE: EngineType = EngineType::Curie;
         let transform = | text | -> String {
             format!("{} \
             tl;dr:", text)
@@ -85,14 +84,13 @@ impl GPTClient {
         };
 
         self.request(
-            ENGINE,
+            EngineType::Curie,
             TaskType::Completion,
             options
         ).await
     }
 
     pub async fn rephrase(&self, text: String) -> String {
-        const ENGINE: EngineType = EngineType::Davinci;
         let transform = | text | -> String {
             format!("{}\n
             In other words: ", text)
@@ -106,14 +104,13 @@ impl GPTClient {
         };
 
         self.request(
-            ENGINE,
+            EngineType::Curie,
             TaskType::Completion,
             options
         ).await
     }
 
     pub async fn complete(&self, text: String, num_tokens: u16) -> String {
-        const ENGINE: EngineType = EngineType::Davinci;
         let options = CompletionOptions {
             prompt: text,
             max_tokens: num_tokens,
@@ -122,17 +119,16 @@ impl GPTClient {
         };
 
         self.request(
-            ENGINE,
+            EngineType::Davinci,
             TaskType::Completion,
             options
         ).await
     }
 
     pub async fn search(&self, documents: Vec<String>, query: String) -> String {
-        const ENGINE: EngineType = EngineType::Davinci;
         let options = SearchOptions { documents, query };
         self.request(
-            ENGINE,
+            EngineType::Davinci,
             TaskType::Search,
             options
         ).await

@@ -4,7 +4,7 @@ use serde_json::json;
 use reqwest::Client;
 use serde::Serialize;
 
-pub async fn rq<T: Serialize>(request_url: String, api_key: String, options: T) -> Result<Response> {
+pub async fn rq<T: Serialize>(request_url: String, api_key: &String, options: T) -> Result<Response> {
     let options = json!(options);
     Client::new()
         .post(&request_url)
