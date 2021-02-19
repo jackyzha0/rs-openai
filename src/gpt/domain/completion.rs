@@ -88,7 +88,7 @@ pub struct Completion {
     text: String,
     index: u16,
     finish_reason: String,
-    logprobs: LogProbs,
+    logprobs: Option<LogProbs>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]

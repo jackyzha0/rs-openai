@@ -53,6 +53,7 @@ impl GPTClient {
         const ENGINE: EngineType = EngineType::Curie;
         let options = Options {
             prompt: text,
+            max_tokens: 50,
             ..Default::default()
         };
 
