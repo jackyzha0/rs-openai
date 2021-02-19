@@ -1,10 +1,12 @@
-use crate::gpt::domain::completion::{Options, CompletionResponse};
+use crate::gpt::domain::completion::{Options as CompletionOptions, CompletionResponse};
+use crate::gpt::domain::search::{Options as SearchOptions, SearchResponse};
+use serde::Serialize;
 
 mod http;
 mod domain;
 
 /// Engine Types. Davinci is the most complex and expensive, Ada is the simplest and cheapest
-enum EngineType {
+pub enum EngineType {
     /// Good at: Complex intent, cause and effect, summarization for audience
     Davinci,
 
@@ -19,7 +21,7 @@ enum EngineType {
 }
 
 #[derive(Copy, Clone)]
-enum TaskType {
+pub enum TaskType {
     Completion,
     Search
 }
@@ -49,7 +51,7 @@ pub struct GPTClient {
 }
 
 impl GPTClient {
-    async fn request(&self, engine: EngineType, task_type: TaskType, options: Options) -> String {
+    pub async fn request<T: Serialize>(&self, engine: EngineType, task_type: TaskType, options: T) -> String {
         let res = http::rq(
             engine.to_endpoint(task_type),
             (&self.api_key).clone(),
@@ -68,7 +70,6 @@ impl GPTClient {
         }
     }
 
-    #[tokio::main]
     pub async fn summarize(&self, text: String) -> String {
         const ENGINE: EngineType = EngineType::Curie;
         let transform = | text | -> String {
@@ -76,7 +77,7 @@ impl GPTClient {
             tl;dr:", text)
         };
 
-        let options = Options {
+        let options = CompletionOptions {
             prompt: transform(text),
             max_tokens: 50,
             stop: Some(vec![". ".to_string()]),
@@ -90,17 +91,50 @@ impl GPTClient {
         ).await
     }
 
-    fn elaborate(&self, text: String) -> String {
-        "not implemented".parse().unwrap()
+    pub async fn rephrase(&self, text: String) -> String {
+        const ENGINE: EngineType = EngineType::Davinci;
+        let transform = | text | -> String {
+            format!("{}\n
+            In other words: ", text)
+        };
+
+        let options = CompletionOptions {
+            prompt: transform(text),
+            max_tokens: 50,
+            stop: Some(vec![". ".to_string()]),
+            ..Default::default()
+        };
+
+        self.request(
+            ENGINE,
+            TaskType::Completion,
+            options
+        ).await
     }
 
-    async fn rephrase(&self, text: String) -> String {
-        "not implemented".parse().unwrap()
+    pub async fn complete(&self, text: String, num_tokens: u16) -> String {
+        const ENGINE: EngineType = EngineType::Davinci;
+        let options = CompletionOptions {
+            prompt: text,
+            max_tokens: num_tokens,
+            stop: Some(vec![". ".to_string()]),
+            ..Default::default()
+        };
+
+        self.request(
+            ENGINE,
+            TaskType::Completion,
+            options
+        ).await
     }
 
-    fn complete(&self, text: String, num_tokens: u16) -> String {
-        "not implemented".parse().unwrap()
+    pub async fn search(&self, documents: Vec<String>, query: String) -> String {
+        const ENGINE: EngineType = EngineType::Davinci;
+        let options = SearchOptions { documents, query };
+        self.request(
+            ENGINE,
+            TaskType::Search,
+            options
+        ).await
     }
-
-    // fn search(&self, document: String, query: String)
 }
