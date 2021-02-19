@@ -1,5 +1,6 @@
 use serde::{Serialize, Deserialize};
 use std::collections::HashMap;
+use reqwest::Response;
 
 #[derive(Serialize, Debug)]
 pub struct Options {

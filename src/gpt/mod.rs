@@ -18,6 +18,7 @@ enum EngineType {
     Ada,
 }
 
+#[derive(Copy, Clone)]
 enum TaskType {
     Completion,
     Search
@@ -48,35 +49,52 @@ pub struct GPTClient {
 }
 
 impl GPTClient {
-    #[tokio::main]
-    pub async fn summarize(&self, text: String) -> String {
-        const ENGINE: EngineType = EngineType::Curie;
-        let options = Options {
-            prompt: text,
-            max_tokens: 50,
-            ..Default::default()
-        };
-
+    async fn request(&self, engine: EngineType, task_type: TaskType, options: Options) -> String {
         let res = http::rq(
-            ENGINE.to_endpoint(TaskType::Completion),
+            engine.to_endpoint(task_type),
             (&self.api_key).clone(),
             options,
         ).await;
 
         match res {
             Ok(v) => {
-                let json = v.json::<CompletionResponse>().await.unwrap();
+                let json = match task_type {
+                    TaskType::Completion => v.json::<CompletionResponse>(),
+                    TaskType::Search => v.json::<CompletionResponse>(),
+                }.await.unwrap();
                 serde_json::to_string(&json).unwrap()
             },
             Err(e) => format!("error making req: {:?}", e),
         }
     }
 
+    #[tokio::main]
+    pub async fn summarize(&self, text: String) -> String {
+        const ENGINE: EngineType = EngineType::Curie;
+        let transform = | text | -> String {
+            format!("{} \
+            tl;dr:", text)
+        };
+
+        let options = Options {
+            prompt: transform(text),
+            max_tokens: 50,
+            stop: Some(vec![". ".to_string()]),
+            ..Default::default()
+        };
+
+        self.request(
+            ENGINE,
+            TaskType::Completion,
+            options
+        ).await
+    }
+
     fn elaborate(&self, text: String) -> String {
         "not implemented".parse().unwrap()
     }
 
-    fn rephrase(&self, text: String) -> String {
+    async fn rephrase(&self, text: String) -> String {
         "not implemented".parse().unwrap()
     }
 
