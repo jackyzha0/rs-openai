@@ -12,5 +12,11 @@
 - [ ] Per user token tracking
 
 ## Installation
+Create a `.env` at the root of this project and fill out your API Key
+
+```dotenv
+GPT_KEY=...
+```
+
 
 ## Usage
