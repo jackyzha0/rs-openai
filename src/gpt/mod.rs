@@ -2,7 +2,6 @@ use crate::gpt::domain::completion::{Options as CompletionOptions, CompletionRes
 use crate::gpt::domain::search::{Options as SearchOptions, SearchResponse};
 use serde::Serialize;
 use anyhow::Result;
-use reqwest::Response;
 use crate::gpt::http::APIResponse;
 
 mod http;
@@ -30,22 +29,25 @@ pub enum TaskType {
 }
 
 const API_BASE: &str = "https://api.openai.com/v1/engines";
-impl EngineType {
-    fn to_str(&self) -> &'static str {
-        match *self {
+impl From<&EngineType> for &'static str {
+    fn from(e: &EngineType) -> Self {
+        match e {
             EngineType::Davinci => "davinci",
             EngineType::Curie => "curie",
             EngineType::Babbage => "babbage",
             EngineType::Ada => "ada"
         }
     }
+}
 
+impl EngineType {
     fn to_endpoint(&self, task_type: TaskType) -> String {
         let task = match task_type {
             TaskType::Completion => "completions",
             TaskType::Search => "search",
         };
-        format!("{}/{}/{}", API_BASE, self.to_str(), task)
+        let engine: &'static str = self.into();
+        format!("{}/{}/{}", API_BASE, engine, task)
     }
 }
 
@@ -76,11 +78,10 @@ impl GPTClient {
             ..Default::default()
         };
 
-        self.request(
-            EngineType::Curie,
-            TaskType::Completion,
-            options
-        ).await?.stringify::<CompletionResponse>().await
+        self.request(EngineType::Curie, TaskType::Completion, options)
+            .await?
+            .stringify::<CompletionResponse>()
+            .await
     }
 
     pub async fn rephrase(&self, text: String) -> Result<String> {
@@ -96,11 +97,10 @@ impl GPTClient {
             ..Default::default()
         };
 
-        self.request(
-            EngineType::Curie,
-            TaskType::Completion,
-            options
-        ).await?.stringify::<CompletionResponse>().await
+        self.request(EngineType::Curie, TaskType::Completion, options)
+            .await?
+            .stringify::<CompletionResponse>()
+            .await
     }
 
     pub async fn complete(&self, text: String, num_tokens: u16) -> Result<String> {
@@ -111,19 +111,17 @@ impl GPTClient {
             ..Default::default()
         };
 
-        self.request(
-            EngineType::Davinci,
-            TaskType::Completion,
-            options
-        ).await?.stringify::<CompletionResponse>().await
+        self.request(EngineType::Davinci, TaskType::Completion, options)
+            .await?
+            .stringify::<CompletionResponse>()
+            .await
     }
 
     pub async fn search(&self, documents: Vec<String>, query: String) -> Result<String> {
         let options = SearchOptions { documents, query };
-        self.request(
-            EngineType::Davinci,
-            TaskType::Search,
-            options
-        ).await?.stringify::<SearchResponse>().await
+        self.request(EngineType::Davinci, TaskType::Search, options)
+            .await?
+            .stringify::<SearchResponse>()
+            .await
     }
 }
