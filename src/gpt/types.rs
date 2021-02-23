@@ -1,5 +1,5 @@
-use rocket::request::FromParam;
 use rocket::http::RawStr;
+use rocket::request::FromParam;
 
 /// Engine Types. Davinci is the most complex and expensive, Ada is the simplest and cheapest
 pub enum EngineType {
@@ -37,7 +37,7 @@ impl<'r> FromParam<'r> for EngineType {
             "curie" => Ok(EngineType::Curie),
             "babbage" => Ok(EngineType::Babbage),
             "ada" => Ok(EngineType::Ada),
-            _ => Err(param)
+            _ => Err(param),
         }
     }
 }
@@ -66,7 +66,7 @@ impl<'r> FromParam<'r> for TaskType {
         match p {
             "completions" => Ok(TaskType::Completion),
             "search" => Ok(TaskType::Search),
-            _ => Err(param)
+            _ => Err(param),
         }
     }
 }

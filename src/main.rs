@@ -2,19 +2,18 @@
 extern crate rocket;
 extern crate dotenv;
 
+use crate::gpt::domain::completion::{CompletionResponse, Options as CompletionOptions};
 use crate::gpt::domain::search::{Options as SearchOptions, SearchResponse};
-use crate::gpt::domain::completion::{Options as CompletionOptions, CompletionResponse};
 use crate::gpt::domain::unions::{UnionOptions, UnionResponse};
 use anyhow::Error;
-use merge::Merge;
+
 use rocket::response::Responder;
 
-use rocket::{State, Data};
+use crate::gpt::types::{EngineType, TaskType};
+use rocket::State;
 use rocket_contrib::json::Json;
 use serde::{Deserialize, Serialize};
-use crate::gpt::types::{EngineType, TaskType};
 use std::str;
-use rocket::data::ToByteUnit;
 
 mod gpt;
 
@@ -85,10 +84,12 @@ async fn complete(
     gpt: State<'_, gpt::GPTClient>,
 ) -> Result<Json<CompletionResponse>, DomainError> {
     let req = data.into_inner();
-    let res = gpt.complete(
-        req.prompt.unwrap_or_default(),
-        req.max_tokens.unwrap_or_default()
-    ).await?;
+    let res = gpt
+        .complete(
+            req.prompt.unwrap_or_default(),
+            req.max_tokens.unwrap_or_default(),
+        )
+        .await?;
     Ok(Json(res))
 }
 
@@ -100,11 +101,7 @@ async fn request(
     gpt: State<'_, gpt::GPTClient>,
 ) -> Result<Json<UnionResponse>, DomainError> {
     let req = data.into_inner();
-    let res = gpt.request(
-        engine,
-        task,
-        req,
-    ).await?;
+    let res = gpt.request(engine, task, req).await?;
 
     if res.status().is_success() {
         let resp = res.json::<UnionResponse>().await?;
@@ -122,12 +119,8 @@ fn rocket() -> rocket::Rocket {
             let key = dotenv::var("GPT_KEY").unwrap();
             gpt::GPTClient { api_key: key }
         })
-        .mount("/", routes![
-            healthz,
-            search,
-            summarize,
-            rephrase,
-            complete,
-            request,
-        ])
+        .mount(
+            "/",
+            routes![healthz, search, summarize, rephrase, complete, request,],
+        )
 }

@@ -1,12 +1,12 @@
 pub(crate) mod domain;
-pub(crate) mod types;
 mod http;
+pub(crate) mod types;
 
 use crate::gpt::domain::completion::{CompletionResponse, Options as CompletionOptions};
 use crate::gpt::domain::search::{Options as SearchOptions, SearchResponse};
+use crate::gpt::domain::unions::UnionOptions;
 use crate::gpt::types::{EngineType, TaskType};
-use crate::gpt::domain::unions::{UnionResponse, UnionOptions};
-use serde::Serialize;
+
 use anyhow::Result;
 use reqwest::Response;
 
@@ -42,11 +42,14 @@ impl GPTClient {
         };
 
         Ok(self
-            .request(EngineType::Curie, TaskType::Completion, UnionOptions::Completion(options))
+            .request(
+                EngineType::Curie,
+                TaskType::Completion,
+                UnionOptions::Completion(options),
+            )
             .await?
             .json::<CompletionResponse>()
-            .await?
-        )
+            .await?)
     }
 
     pub async fn rephrase(&self, text: String) -> Result<CompletionResponse> {
@@ -66,7 +69,11 @@ impl GPTClient {
         };
 
         Ok(self
-            .request(EngineType::Curie, TaskType::Completion, UnionOptions::Completion(options))
+            .request(
+                EngineType::Curie,
+                TaskType::Completion,
+                UnionOptions::Completion(options),
+            )
             .await?
             .json::<CompletionResponse>()
             .await?)
@@ -81,7 +88,11 @@ impl GPTClient {
         };
 
         Ok(self
-            .request(EngineType::Davinci, TaskType::Completion, UnionOptions::Completion(options))
+            .request(
+                EngineType::Davinci,
+                TaskType::Completion,
+                UnionOptions::Completion(options),
+            )
             .await?
             .json::<CompletionResponse>()
             .await?)
@@ -90,7 +101,11 @@ impl GPTClient {
     pub async fn search(&self, documents: Vec<String>, query: String) -> Result<SearchResponse> {
         let options = SearchOptions { documents, query };
         Ok(self
-            .request(EngineType::Davinci, TaskType::Search, UnionOptions::Search(options))
+            .request(
+                EngineType::Davinci,
+                TaskType::Search,
+                UnionOptions::Search(options),
+            )
             .await?
             .json::<SearchResponse>()
             .await?)

@@ -1,6 +1,6 @@
-use serde::{Deserialize, Serialize};
 use crate::gpt::domain::completion;
 use crate::gpt::domain::search;
+use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
 #[serde(untagged)]

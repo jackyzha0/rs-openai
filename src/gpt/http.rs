@@ -1,8 +1,7 @@
-
 use anyhow::Result;
 use reqwest::Client;
 use reqwest::Response;
-use serde::{Serialize};
+use serde::Serialize;
 use serde_json::json;
 
 pub async fn rq<T: Serialize>(
