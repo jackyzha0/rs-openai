@@ -7,7 +7,7 @@
 
 ## Features
 - [x] Rust crate for API access
-- [ ] Base API server
+- [x] Base API server
 - [ ] Rate Limiting based off of user ID
 - [ ] Per user token tracking
 
