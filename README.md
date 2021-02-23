@@ -8,7 +8,7 @@
 ## Features
 - [x] Rust crate for API access
 - [x] Base API server
-- [ ] Rate Limiting based off of user ID
+- [x] Rate Limiting based off of user ID
 - [ ] Per user token tracking
 
 ## Installation
@@ -17,6 +17,3 @@ Create a `.env` at the root of this project and fill out your API Key
 ```dotenv
 GPT_KEY=...
 ```
-
-
-## Usage
