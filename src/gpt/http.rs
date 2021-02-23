@@ -1,8 +1,8 @@
-use crate::gpt::domain::completion;
+
 use anyhow::Result;
 use reqwest::Client;
 use reqwest::Response;
-use serde::{Deserialize, Serialize};
+use serde::{Serialize};
 use serde_json::json;
 
 // pub struct APIResponse(Response);
