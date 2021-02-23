@@ -15,6 +15,12 @@ pub struct GPTClient {
 }
 
 impl GPTClient {
+    pub fn new(key: String) -> Self {
+        Self {
+            api_key: key,
+        }
+    }
+
     pub async fn request(
         &self,
         engine: EngineType,

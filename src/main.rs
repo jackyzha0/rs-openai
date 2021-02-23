@@ -16,6 +16,7 @@ use serde::{Deserialize, Serialize};
 use std::str;
 
 mod gpt;
+mod rate_limit;
 
 #[derive(Deserialize, Serialize, Debug, Responder)]
 pub enum DomainError {
@@ -113,12 +114,15 @@ async fn request(
 
 #[launch]
 fn rocket() -> rocket::Rocket {
+    let client = {
+        dotenv::dotenv().ok();
+        let key = dotenv::var("GPT_KEY").unwrap();
+        gpt::GPTClient::new(key)
+    };
+
     rocket::ignite()
-        .manage({
-            dotenv::dotenv().ok();
-            let key = dotenv::var("GPT_KEY").unwrap();
-            gpt::GPTClient { api_key: key }
-        })
+        .attach(rate_limit::RateLimiter::new())
+        .manage(client)
         .mount(
             "/",
             routes![healthz, search, summarize, rephrase, complete, request,],
