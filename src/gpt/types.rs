@@ -64,7 +64,7 @@ impl<'r> FromParam<'r> for TaskType {
     fn from_param(param: &'r RawStr) -> Result<Self, Self::Error> {
         let p = param.as_str();
         match p {
-            "completion" => Ok(TaskType::Completion),
+            "completions" => Ok(TaskType::Completion),
             "search" => Ok(TaskType::Search),
             _ => Err(param)
         }

@@ -5,14 +5,6 @@ use reqwest::Response;
 use serde::{Serialize};
 use serde_json::json;
 
-// pub struct APIResponse(Response);
-// impl APIResponse {
-//     pub async fn stringify<T>(self) -> Result<String> where T: Serialize + for<'de> Deserialize<'de> {
-//         let json = self.0.json::<T>().await?;
-//         Ok(serde_json::to_string(&json)?)
-//     }
-// }
-
 pub async fn rq<T: Serialize>(
     request_url: String,
     api_key: &String,

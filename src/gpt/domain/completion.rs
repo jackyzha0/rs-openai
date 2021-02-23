@@ -4,6 +4,7 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
 #[derive(Serialize, Deserialize, Debug)]
+#[serde(default)]
 pub struct Options {
     /// The prompt(s) to generate completions for, encoded as a string
     pub prompt: Option<String>,

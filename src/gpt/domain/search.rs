@@ -1,8 +1,9 @@
 
 
+use merge::Merge;
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, Debug, PartialEq, Eq)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Options {
     /// Up to 200 documents to search over, provided as a list of strings.
     //

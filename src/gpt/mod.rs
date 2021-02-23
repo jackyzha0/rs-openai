@@ -5,6 +5,7 @@ mod http;
 use crate::gpt::domain::completion::{CompletionResponse, Options as CompletionOptions};
 use crate::gpt::domain::search::{Options as SearchOptions, SearchResponse};
 use crate::gpt::types::{EngineType, TaskType};
+use crate::gpt::domain::unions::{UnionResponse, UnionOptions};
 use serde::Serialize;
 use anyhow::Result;
 use reqwest::Response;
@@ -14,11 +15,11 @@ pub struct GPTClient {
 }
 
 impl GPTClient {
-    pub async fn request<T: Serialize>(
+    pub async fn request(
         &self,
         engine: EngineType,
         task_type: TaskType,
-        options: T,
+        options: UnionOptions,
     ) -> Result<Response> {
         let res = http::rq(engine.to_endpoint(task_type), &self.api_key, options).await?;
         Ok(res)
@@ -41,10 +42,11 @@ impl GPTClient {
         };
 
         Ok(self
-            .request(EngineType::Curie, TaskType::Completion, options)
+            .request(EngineType::Curie, TaskType::Completion, UnionOptions::Completion(options))
             .await?
             .json::<CompletionResponse>()
-            .await?)
+            .await?
+        )
     }
 
     pub async fn rephrase(&self, text: String) -> Result<CompletionResponse> {
@@ -64,7 +66,7 @@ impl GPTClient {
         };
 
         Ok(self
-            .request(EngineType::Curie, TaskType::Completion, options)
+            .request(EngineType::Curie, TaskType::Completion, UnionOptions::Completion(options))
             .await?
             .json::<CompletionResponse>()
             .await?)
@@ -79,7 +81,7 @@ impl GPTClient {
         };
 
         Ok(self
-            .request(EngineType::Davinci, TaskType::Completion, options)
+            .request(EngineType::Davinci, TaskType::Completion, UnionOptions::Completion(options))
             .await?
             .json::<CompletionResponse>()
             .await?)
@@ -88,7 +90,7 @@ impl GPTClient {
     pub async fn search(&self, documents: Vec<String>, query: String) -> Result<SearchResponse> {
         let options = SearchOptions { documents, query };
         Ok(self
-            .request(EngineType::Davinci, TaskType::Search, options)
+            .request(EngineType::Davinci, TaskType::Search, UnionOptions::Search(options))
             .await?
             .json::<SearchResponse>()
             .await?)
