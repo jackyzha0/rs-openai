@@ -1,9 +1,9 @@
-use serde::{Serialize, Deserialize};
-use std::collections::HashMap;
 use anyhow::Result;
 use reqwest::Response;
+use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
 
-#[derive(Serialize, Debug)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Options {
     /// The prompt(s) to generate completions for, encoded as a string
     pub prompt: String,
@@ -69,7 +69,7 @@ impl Default for Options {
             stop: None,
             presence_penalty: 0.0,
             frequency_penalty: 0.0,
-            best_of: 1
+            best_of: 1,
         }
     }
 }
@@ -81,7 +81,7 @@ pub struct CompletionResponse {
     object: String,
     created: u64,
     model: String,
-    choices: Vec<Completion>
+    choices: Vec<Completion>,
 }
 
 /// represents a single possible completion done by GPT-3
@@ -98,5 +98,5 @@ pub struct LogProbs {
     tokens: Vec<String>,
     token_logprobs: Vec<f32>,
     top_logprobs: HashMap<String, f32>,
-    text_offset: Vec<u16>
+    text_offset: Vec<u16>,
 }

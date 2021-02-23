@@ -1,8 +1,8 @@
-use serde::{Serialize, Deserialize};
 use anyhow::Result;
 use reqwest::Response;
+use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Eq)]
 pub struct Options {
     /// Up to 200 documents to search over, provided as a list of strings.
     //
@@ -10,13 +10,13 @@ pub struct Options {
     pub documents: Vec<String>,
 
     /// Query to search against the documents.
-    pub query: String
+    pub query: String,
 }
 
 /// represents a response structure for search API
 #[derive(Serialize, Deserialize, Debug)]
 pub struct SearchResponse {
-    data: Vec<Search>
+    data: Vec<Search>,
 }
 
 /// represents a single possible search
