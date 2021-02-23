@@ -1,6 +1,6 @@
 pub(crate) mod domain;
+pub(crate) mod types;
 mod http;
-mod types;
 
 use crate::gpt::domain::completion::{CompletionResponse, Options as CompletionOptions};
 use crate::gpt::domain::search::{Options as SearchOptions, SearchResponse};

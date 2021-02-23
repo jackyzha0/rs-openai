@@ -1,3 +1,6 @@
+use rocket::request::FromParam;
+use rocket::http::RawStr;
+
 /// Engine Types. Davinci is the most complex and expensive, Ada is the simplest and cheapest
 pub enum EngineType {
     /// Good at: Complex intent, cause and effect, summarization for audience
@@ -13,12 +16,6 @@ pub enum EngineType {
     Ada,
 }
 
-#[derive(Copy, Clone)]
-pub enum TaskType {
-    Completion,
-    Search,
-}
-
 const API_BASE: &str = "https://api.openai.com/v1/engines";
 impl From<&EngineType> for &'static str {
     fn from(e: &EngineType) -> Self {
@@ -27,6 +24,20 @@ impl From<&EngineType> for &'static str {
             EngineType::Curie => "curie",
             EngineType::Babbage => "babbage",
             EngineType::Ada => "ada",
+        }
+    }
+}
+
+impl<'r> FromParam<'r> for EngineType {
+    type Error = &'r RawStr;
+    fn from_param(param: &'r RawStr) -> Result<Self, Self::Error> {
+        let p = param.as_str();
+        match p {
+            "davinci" => Ok(EngineType::Davinci),
+            "curie" => Ok(EngineType::Curie),
+            "babbage" => Ok(EngineType::Babbage),
+            "ada" => Ok(EngineType::Ada),
+            _ => Err(param)
         }
     }
 }
@@ -42,3 +53,20 @@ impl EngineType {
     }
 }
 
+#[derive(Copy, Clone)]
+pub enum TaskType {
+    Completion,
+    Search,
+}
+
+impl<'r> FromParam<'r> for TaskType {
+    type Error = &'r RawStr;
+    fn from_param(param: &'r RawStr) -> Result<Self, Self::Error> {
+        let p = param.as_str();
+        match p {
+            "completion" => Ok(TaskType::Completion),
+            "search" => Ok(TaskType::Search),
+            _ => Err(param)
+        }
+    }
+}

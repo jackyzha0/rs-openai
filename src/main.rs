@@ -10,6 +10,7 @@ use rocket::response::Responder;
 use rocket::State;
 use rocket_contrib::json::Json;
 use serde::{Deserialize, Serialize};
+use crate::gpt::types::{EngineType, TaskType};
 
 mod gpt;
 
@@ -17,13 +18,19 @@ mod gpt;
 pub enum DomainError {
     #[response(status = 400, content_type = "plain")]
     BadRequest(String),
-    #[response(status = 404, content_type = "plain")]
-    IdNotFound(String),
+    #[response(status = 501, content_type = "plain")]
+    Internal(String),
 }
 
 impl From<Error> for DomainError {
     fn from(error: Error) -> Self {
         DomainError::BadRequest(error.to_string())
+    }
+}
+
+impl From<reqwest::Error> for DomainError {
+    fn from(error: reqwest::Error) -> Self {
+        DomainError::Internal(error.to_string())
     }
 }
 
@@ -44,14 +51,14 @@ async fn search(
 
 #[post("/request/<task>/<engine>", format = "json", data = "<data>")]
 async fn request(
-    task: String,
-    engine: String,
+    task: TaskType,
+    engine: EngineType,
     data: Json<Options>,
     gpt: State<'_, gpt::GPTClient>,
-) -> Result<Json<SearchResponse>, DomainError> {
+) -> Result<Json<String>, DomainError> {
     let req = data.into_inner();
-    let res = gpt.search(req.documents, req.query).await?;
-    Ok(Json(res))
+    let res = gpt.request(engine, task, req).await?;
+    Ok(Json(res.json().await?))
 }
 
 #[launch]
