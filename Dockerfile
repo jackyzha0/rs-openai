@@ -13,7 +13,7 @@ RUN cargo fetch
 # copy source code
 COPY src ./src
 
-RUN cargo build
+RUN cargo build --release
 
 # Stage 2: actual container
 FROM rust:slim
