@@ -11,9 +11,17 @@
 - [x] Rate Limiting based off of user ID
 - [ ] Per user token tracking
 
-## Installation
+## Usage
 Create a `.env` at the root of this project and fill out your API Key
 
 ```dotenv
 GPT_KEY=...
+```
+
+Then run `cargo run` in this directory to start the server on port `:8000`.
+
+## With Docker
+```bash
+$ docker build . -t rs-openai:latest
+$ docker run -p 8000:8000 rs-openai:latest
 ```
