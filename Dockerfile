@@ -20,9 +20,8 @@ FROM rust:slim
 WORKDIR "/project/app"
 
 # get files and built binary from previous image
-COPY --from=builder /project/app/target/debug/ ./
+COPY --from=builder /project/app/target/release/ ./
 
 EXPOSE 8000
-ENV ROCKET_ENV=stage
 
 ENTRYPOINT ["./openai-client"]
